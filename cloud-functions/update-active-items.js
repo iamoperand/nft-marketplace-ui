@@ -6,7 +6,7 @@ Moralis.Cloud.afterSave("ItemListed", async (request) => {
     // Every event gets triggered twice, once on "unconfirmed" and again on "confirmed"
     const logger = Moralis.Cloud.getLogger()
     const confirmed = request.object.get("confirmed")
-    logger.info("Looking for confirmed transaction")
+    logger.info(`Marketplace: Object ${request.object}`)
 
     if (confirmed) {
         logger.info("Found Item!")
@@ -25,5 +25,36 @@ Moralis.Cloud.afterSave("ItemListed", async (request) => {
         )
         logger.info("Saving...")
         await activeItem.save()
+    }
+})
+
+Moralis.Cloud.afterSave("ItemCancelled", async (request) => {
+    const logger = Moralis.Cloud.getLogger()
+    const confirmed = request.object.get("confirmed")
+    logger.info(`Marketplace: Object ${request.object}`)
+
+    if (confirmed) {
+        const ActiveItem = Moralis.Object.extend("ActiveItem")
+        const query = new Moralis.Query(ActiveItem)
+        query.equalTo("marketplaceAddress", request.object.get("address"))
+        query.equalTo("nftAddress", request.object.get("nftAddress"))
+        query.equalTo("tokenId", request.object.get("tokenId"))
+        logger.info(`Marketplace | Query: ${query}`)
+        const cancelledItem = await query.first()
+        logger.info(`Marketplace | CancelledItem: ${cancelledItem}`)
+        if (cancelledItem) {
+            logger.info(
+                `Deleting ${request.object.get("tokenId")} at address ${request.object.get(
+                    "address"
+                )} since it was cancelled`
+            )
+            await cancelledItem.destroy()
+        } else {
+            logger.info(
+                `No item found with address: ${request.object.get(
+                    "address"
+                )} and tokenId: ${request.object.get("tokenId")} `
+            )
+        }
     }
 })
