@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useWeb3Contract } from "react-moralis"
 import { ethers } from "ethers"
 
-import nftMarketplaceAbi from "../constants/NftMarketplace.json"
+import nftMarketplaceAbi from "../constants/abi/NftMarketplace.json"
 
 export default function UpdateListingModal({
     nftAddress,

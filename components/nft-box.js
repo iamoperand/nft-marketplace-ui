@@ -4,8 +4,8 @@ import Image from "next/image"
 import { Card, useNotification } from "web3uikit"
 import { ethers } from "ethers"
 
-import nftMarketplaceAbi from "../constants/NftMarketplace.json"
-import nftAbi from "../constants/BasicNft.json"
+import nftMarketplaceAbi from "../constants/abi/NftMarketplace.json"
+import nftAbi from "../constants/abi/BasicNft.json"
 import UpdateListingModal from "./update-listing-modal"
 
 const truncateStr = (fullStr, strLen) => {
